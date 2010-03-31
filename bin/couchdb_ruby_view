@@ -1,8 +1,8 @@
-#!/usr/bin/ruby -wKU
+#!/usr/local/bin/ruby -wKU
 
 #begin
 require 'rubygems'
-require 'json'
+require 'yajl'
 
 # Highly experimental view requestor for CouchDb
 # 
@@ -29,9 +29,9 @@ def log(message)
 end
 
 def respond(obj)
-  puts JSON.unparse(obj)
+  puts Yajl::Encoder.encode(obj)
 rescue => e
-  puts JSON.unparse(["log", "Error converting object to JSON: #{e}"])
+  puts Yajl::Encoder.encode(["log", "Error converting object to JSON: #{e}"])
 ensure
   STDOUT.flush
 end
@@ -64,8 +64,8 @@ end
 
 callables = []
 while cmd = ARGF.gets
-  #$stderr.puts "@@@==> got: #{cmd.inspect}"
-  cmd = JSON.parse(cmd)
+#  $stderr.puts "@@@==> got: #{cmd.inspect}"
+  cmd = Yajl::Parser.parse(cmd)
   case cmd[0]
   when "reset"
     callables = []
